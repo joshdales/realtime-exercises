@@ -21,6 +21,12 @@ ws.addEventListener("open", () => {
   presence.innerText = "🟢";
 });
 
+ws.addEventListener("message", (event) => {
+  const data = JSON.parse(event.data);
+  allChat = data.msgs;
+  render();
+});
+
 function render() {
   const html = allChat.map(({ user, text }) => template(user, text));
   msgs.innerHTML = html.join("\n");
