@@ -29,11 +29,6 @@ const server = http2.createSecureServer({
   key: fs.readFileSync(path.join(__dirname, "/../key.pem")),
 });
 
-/*
- *
- * Code goes here
- *
- */
 server.on("stream", (stream, headers) => {
   const path = headers[":path"];
   const method = headers[":method"];
@@ -48,9 +43,11 @@ server.on("stream", (stream, headers) => {
 
     // Write the first response
     stream.write(JSON.stringify({ msgs: getMsgs() }));
+    connections.push(stream);
 
     stream.on("close", () => {
       console.log("disconnected", stream.id);
+      connections.filter((s) => s !== stream);
     });
   }
 });
