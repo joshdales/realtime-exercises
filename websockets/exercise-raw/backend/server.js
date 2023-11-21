@@ -44,8 +44,10 @@ server.on("upgrade", (req, socket) => {
   ];
 
   socket.write(headers.join("\r\n"));
-
   socket.write(objToResponse({ msgs: getMsgs() }));
+  socket.on("data", (buffer) => {
+    console.log(buffer);
+  });
 });
 
 const port = process.env.PORT || 8080;

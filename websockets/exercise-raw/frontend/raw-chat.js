@@ -11,7 +11,9 @@ chat.addEventListener("submit", function (e) {
 });
 
 async function postNewMsg(user, text) {
-  // code goes here
+  const data = { user, text, time: Date.now() };
+
+  ws.send(JSON.stringify(data));
 }
 
 const ws = new WebSocket("ws://localhost:8080", ["json"]);
