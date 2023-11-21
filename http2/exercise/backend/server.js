@@ -34,6 +34,26 @@ const server = http2.createSecureServer({
  * Code goes here
  *
  */
+server.on("stream", (stream, headers) => {
+  const path = headers[":path"];
+  const method = headers[":method"];
+  // streams open for every request
+  if (path === "/msgs" && method && "GET") {
+    // immediately reply with 200 OK and the encoding
+    console.log("connected", stream.id);
+    stream.respond({
+      ":status": 200,
+      "content-type": "text/plain; charset=utf-8",
+    });
+
+    // Write the first response
+    stream.write(JSON.stringify({ msgs: getMsgs() }));
+
+    stream.on("close", () => {
+      console.log("disconnected", stream.id);
+    });
+  }
+});
 
 server.on("request", async (req, res) => {
   const path = req.headers[":path"];
