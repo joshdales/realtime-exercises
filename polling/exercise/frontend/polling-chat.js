@@ -42,7 +42,7 @@ async function getNewMsgs() {
     const res = await fetch("/poll");
     json = await res.json();
 
-    if (res.status >= 400) {
+    if (!res.ok) {
       throw new Error(`request did not succeed: ${res.status}`);
     }
 
