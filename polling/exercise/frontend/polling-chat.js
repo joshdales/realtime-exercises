@@ -4,8 +4,13 @@ const msgs = document.getElementById("msgs");
 // let's store all current messages here
 let allChat = [];
 
+// number of times that we failed to fetch the new messages
+let failedTries = 0;
+
 // the interval to poll at in milliseconds
 const INTERVAL = 3000;
+// If a request failed increase the interval by 5 seconds
+const BACKOFF = 5000;
 
 // a submit listener on the form in the HTML
 chat.addEventListener("submit", function (e) {
@@ -36,12 +41,19 @@ async function getNewMsgs() {
   try {
     const res = await fetch("/poll");
     json = await res.json();
+
+    if (res.status >= 400) {
+      throw new Error(`request did not succeed: ${res.status}`);
+    }
+
+    allChat = json.msg;
+    render();
+    failedTries = 0;
   } catch (err) {
     // back off code
     console.error("polling error", err);
+    failedTries++;
   }
-  allChat = json.msg;
-  render();
 }
 
 function render() {
@@ -62,7 +74,7 @@ let timeToMakeNextRequest = 0;
 async function rafTimer(time) {
   if (timeToMakeNextRequest <= time) {
     await getNewMsgs();
-    timeToMakeNextRequest = time + INTERVAL;
+    timeToMakeNextRequest = time + INTERVAL + failedTries * BACKOFF;
   }
 
   requestAnimationFrame(rafTimer);
