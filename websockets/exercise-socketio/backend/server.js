@@ -23,9 +23,10 @@ const io = new Server(server, {});
 
 io.on("connection", (socket) => {
   console.log(`connected to ${socket.id}`);
+  socket.emit("msgs:get", { msgs: getMsgs() });
 
   socket.on("disconnect", () => {
-    console.log(`disconnected: ${socket.id}`);
+    console.log(`disconnected from ${socket.id}`);
   });
 });
 
