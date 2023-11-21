@@ -46,7 +46,14 @@ server.on("upgrade", (req, socket) => {
   socket.write(headers.join("\r\n"));
   socket.write(objToResponse({ msgs: getMsgs() }));
   socket.on("data", (buffer) => {
-    console.log(buffer);
+    const message = parseMessage(buffer);
+    if (message) {
+      msg.push({
+        user: message.user,
+        text: message.text,
+        time: Date.now(),
+      });
+    }
   });
 });
 

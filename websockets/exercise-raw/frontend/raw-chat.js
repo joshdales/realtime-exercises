@@ -11,7 +11,7 @@ chat.addEventListener("submit", function (e) {
 });
 
 async function postNewMsg(user, text) {
-  const data = { user, text, time: Date.now() };
+  const data = { user, text };
 
   ws.send(JSON.stringify(data));
 }
