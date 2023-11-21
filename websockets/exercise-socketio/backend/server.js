@@ -28,6 +28,15 @@ io.on("connection", (socket) => {
   socket.on("disconnect", () => {
     console.log(`disconnected from ${socket.id}`);
   });
+
+  socket.on("msgs:post", (data) => {
+    msg.push({
+      user: data.user,
+      text: data.text,
+      time: Date.now(),
+    });
+    io.emit("msgs:get", { msgs: getMsgs() });
+  });
 });
 
 const port = process.env.PORT || 8080;

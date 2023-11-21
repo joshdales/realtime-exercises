@@ -28,11 +28,9 @@ chat.addEventListener("submit", function (e) {
 });
 
 async function postNewMsg(user, text) {
-  /*
-   *
-   * Code goes here
-   *
-   */
+  const data = { user, text };
+
+  socket.emit("msgs:post", data);
 }
 
 function render() {
